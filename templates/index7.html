@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Stock Alerts</title>
+</head>
+<body>
+    <h1>Low Stock Items</h1>
+    {% if low_stock_items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Threshold</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in low_stock_items %}
+                    <tr>
+                        <td>{{ item['Item'] }}</td>
+                        <td>{{ item['Quantity'] }}</td>
+                        <td>{{ item['Threshold'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No low stock items.</p>
+    {% endif %}
+</body>
+</html>
