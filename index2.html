@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Link to Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100%;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color:#404139;
+            padding: 120px 20px;
+            width: 250px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: width 0.3s ease;
+           
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            padding: 20px 0;
+            overflow: hidden;
+        }
+
+        .menu-item {
+            color: #fcfcfc;
+            padding: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .menu-item i {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .menu-item:hover {
+            color: #a09666;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+      
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow-y: auto;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.collapsed {
+            margin-left: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            color: #2c3e50;
+            cursor: pointer;
+            gap:10px;
+        }
+
+        .logout {
+            font-size: 24px;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .logout:hover {
+            color: #e74c3c;
+        }
+
+        .analysis-section {
+            margin-top: 36px;
+        }
+
+        .analysis-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        
+        .logo {
+    position: absolute;
+    top: 10px; /* Adjust vertical position */
+    left: 20px; /* Keep aligned to the left */
+    display: flex;
+    align-items: center; /* Align text and logo in the same row */
+    gap: 10px; /* Space between logo and text */
+}
+.logo img {
+    width: 80px;  /* Adjust logo size */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.logo-text {
+    font-size: 20px;
+    font-family: cursive; /* Main font */
+    font-weight: bold;
+    color: #fcfcfc;
+    white-space: nowrap;
+}
+
+
+        .graph h2 {
+            position: absolute;
+            top: 20px; /* Adjust the value to move it inside the graph */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        .graph {
+            width: 95%;
+            height: 650px;
+            margin-top: 20px;
+            background: rgba(211, 211, 211, 0.2);
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo-Photoroom.png') }}" alt="Logo">
+                <span class="logo-text">Xtrackmed</span>
+
+            </div>
+            <a href="/index2" class="menu-item" onclick="toggleSidebar()"><i class="fas fa-tachometer-alt"></i> DASHBOARD</a>
+            <a href="/index3" class="menu-item" onclick="toggleSidebar()"><i class="fas fa-box-open"></i> PRODUCT</a>
+            <a href="/index4" class="menu-item" onclick="toggleSidebar()"><i class="fas fa-warehouse"></i> STOCK</a>
+            <a href="/index6" class="menu-item" onclick="toggleSidebar()"><i class="fas fa-bell"></i> NOTIFICATION</a>
+            <a href="/index" class="menu-item" onclick="toggleSidebar()"><i class="fas fa-calculator"></i> ESTIMATION</a>
+        </div>
+
+        <div class="main-content" id="main-content">
+            <header>
+                <h1 onclick="toggleSidebar()"><i class="fas fa-bars"></i>  DASHBOARD</h1>
+                <i class="fas fa-sign-out-alt logout" onclick="window.location.href='/logout'"></i>
+            </header>
+
+            <!-- Generate PDF button -->
+            <a href="{{ url_for('download_report') }}" class="btn btn-primary">
+                Download Report
+            </a>
+
+            <section class="analysis-section">
+                <div class="graph">
+                    {{ graph_html1 | safe }}
+                </div>
+
+                <div class="graph">
+                    <h2>Profit Analysis</h2>
+                    {{ graph_html2 | safe }}
+                </div>
+            </section>
+        </div>
+    </div>
+
+    
+    
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const mainContent = document.getElementById("main-content");
+            
+            sidebar.classList.toggle("collapsed");
+            mainContent.classList.toggle("collapsed");
+        }
+    </script>
+</body>
+</html>
