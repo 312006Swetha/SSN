@@ -406,7 +406,7 @@ def restock_items():                      #update spplier to inventory 1 day
             # Deduct the restocked amount from the supplier's stock and update supplier_last_updated
             supplier_cursor.execute(''' 
                 UPDATE supplier 
-                SET supplier_quantity = supplier_quantity - ?, supplier_last_updated = ? 
+                SET supplier_quantity = supplier_quantity - ?, last_updated = ? 
                 WHERE item_name = ?; 
             ''', (units_to_add, current_time.strftime('%Y-%m-%d %H:%M:%S'), item_name))
 
